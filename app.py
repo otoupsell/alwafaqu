@@ -8,7 +8,7 @@ st.set_page_config(page_title="Dashboard Al Wafa Sejahtera", layout="wide")
 # Fungsi Membaca Data dari Google Sheets (Link CSV)
 def load_data(sheet_id, sheet_name):
     # Link format ekspor CSV dari Google Sheets
-    url = f"https://docs.google.com/spreadsheets/d/{sheet_id}/gviz/tq?tqx=out:csv&sheet={sheet_name}"
+    url = f"https://docs.google.com/spreadsheets/d/1v6u2kOHdcQ30ONrTSzc-e8e2rFFaRvzn/edit?usp=sharing&ouid=115052195248568004587&rtpof=true&sd=true"
     try:
         # Skip 4 baris pertama karena ringkasan TikTok
         df = pd.read_csv(url, skiprows=4)
