@@ -7,8 +7,8 @@ st.set_page_config(page_title="Dashboard Al Wafa Sejahtera", layout="wide")
 
 # Fungsi Membaca Data dari Google Sheets (Link CSV)
 def load_data(sheet_id, sheet_name):
-    # Link format ekspor CSV dari Google Sheets
-    url = f"1v6u2kOHdcQ30ONrTSzc-e8e2rFFaRvzn"
+    # PERBAIKAN 1: URL harus lengkap agar Streamlit bisa mendownload data CSV dari Sheets
+    url = f"https://docs.google.com/spreadsheets/d/{sheet_id}/gviz/tq?tqx=out:csv&sheet={sheet_name}"
     try:
         # Skip 4 baris pertama karena ringkasan TikTok
         df = pd.read_csv(url, skiprows=4)
@@ -21,16 +21,16 @@ def load_data(sheet_id, sheet_name):
         if 'Persentase konversi' in df.columns:
             df['Persentase konversi'] = df['Persentase konversi'].astype(str).str.replace('%', '').astype(float)
         return df
-    except:
+    except Exception as e:
+        st.sidebar.error(f"Gagal memuat data: {e}")
         return None
 
 # --- SIDEBAR ---
 st.sidebar.image("https://www.gstatic.com/images/branding/product/2x/sheets_2020q4_48dp.png", width=50)
 st.sidebar.title("Kontrol Dashboard")
 
-# Masukkan ID Google Sheet Anda di sini
-# Contoh ID: 1aBcDeFgHiJkLmNoPqRsTuVwXyZ
-SHEET_ID = "MASUKKAN_ID_GOOGLE_SHEET_ANDA_DI_SINI"
+# PERBAIKAN 2: Masukkan ID Sheet Anda di sini
+SHEET_ID = "1v6u2kOHdcQ30ONrTSzc-e8e2rFFaRvzn"
 
 list_bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
               'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
@@ -59,7 +59,8 @@ if df is not None and not df.empty:
     with c1:
         fig_gmv = px.area(df, x='Tanggal', y='Nilai Bruto Barang Dagangan (GMV) (Rp)', 
                           title="Tren Omzet Harian", color_discrete_sequence=['#2ecc71'])
-        st.plotly_chart(fig_sales, use_container_width=True)
+        # PERBAIKAN 3: Nama variabel harus sama (tadi fig_sales, sekarang fig_gmv)
+        st.plotly_chart(fig_gmv, use_container_width=True)
     with c2:
         fig_traffic = px.line(df, x='Tanggal', y='Tayangan halaman', 
                              title="Tren Pengunjung", color_discrete_sequence=['#3498db'])
