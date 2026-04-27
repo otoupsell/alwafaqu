@@ -7,7 +7,7 @@ st.set_page_config(page_title="Dashboard Al Wafa Sejahtera", layout="wide")
 
 # Fungsi Membaca Data dari Google Sheets (Link CSV)
 def load_data(sheet_id, sheet_name):
-    # PERBAIKAN 1: URL harus lengkap agar Streamlit bisa mendownload data CSV dari Sheets
+    # Link format ekspor CSV dari Google Sheets (ID sudah dimasukkan)
     url = f"https://docs.google.com/spreadsheets/d/{sheet_id}/gviz/tq?tqx=out:csv&sheet={sheet_name}"
     try:
         # Skip 4 baris pertama karena ringkasan TikTok
@@ -22,14 +22,13 @@ def load_data(sheet_id, sheet_name):
             df['Persentase konversi'] = df['Persentase konversi'].astype(str).str.replace('%', '').astype(float)
         return df
     except Exception as e:
-        st.sidebar.error(f"Gagal memuat data: {e}")
         return None
 
 # --- SIDEBAR ---
 st.sidebar.image("https://www.gstatic.com/images/branding/product/2x/sheets_2020q4_48dp.png", width=50)
 st.sidebar.title("Kontrol Dashboard")
 
-# PERBAIKAN 2: Masukkan ID Sheet Anda di sini
+# ID Google Sheet Anda
 SHEET_ID = "1v6u2kOHdcQ30ONrTSzc-e8e2rFFaRvzn"
 
 list_bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
@@ -59,7 +58,6 @@ if df is not None and not df.empty:
     with c1:
         fig_gmv = px.area(df, x='Tanggal', y='Nilai Bruto Barang Dagangan (GMV) (Rp)', 
                           title="Tren Omzet Harian", color_discrete_sequence=['#2ecc71'])
-        # PERBAIKAN 3: Nama variabel harus sama (tadi fig_sales, sekarang fig_gmv)
         st.plotly_chart(fig_gmv, use_container_width=True)
     with c2:
         fig_traffic = px.line(df, x='Tanggal', y='Tayangan halaman', 
@@ -70,4 +68,4 @@ if df is not None and not df.empty:
     with st.expander("Lihat Data Mentah"):
         st.dataframe(df, use_container_width=True)
 else:
-    st.error(f"Data untuk bulan {bulan_pilihan} belum ada di Google Sheets atau link tidak bisa diakses.")
+    st.error(f"Data untuk bulan {bulan_pilihan} belum tersedia atau Google Sheets belum disetel ke 'Anyone with the link'.")
